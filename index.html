@@ -62,7 +62,15 @@
        cursor:pointer;transition:transform .35s cubic-bezier(.34,1.7,.5,1), box-shadow .2s;touch-action:manipulation}
   .btn.ghost{background:#fff;color:var(--pink);border:2px solid var(--pink-soft);box-shadow:0 6px 14px rgba(229,98,138,.12)}
   .btn.wide{width:100%}
-  .sticker{display:block;width:170px;height:auto;margin:0 auto;animation:bob 2.4s ease-in-out infinite}
+  .sticker{display:block;width:180px;height:auto;margin:0 auto;transform-origin:50% 100%;
+           animation:alive 3.2s cubic-bezier(.45,0,.55,1) infinite;will-change:transform}
+  /* мягкое «дыхание» + покачивание, как у стикеров в Телеграме */
+  @keyframes alive{
+    0%,100%{transform:translateY(0) rotate(0) scale(1,1)}
+    25%{transform:translateY(-3px) rotate(-2.5deg) scale(1.015,.985)}
+    50%{transform:translateY(-6px) rotate(0) scale(.985,1.03)}
+    75%{transform:translateY(-3px) rotate(2.5deg) scale(1.015,.985)}
+  }
 
   /* «Нет» подмигивает, пока на него не нажали */
   .hint{animation:hint 2.2s ease-in-out infinite}
@@ -262,7 +270,7 @@ const svg = (vb, body) => `<svg class="art" viewBox="${vb}" xmlns="http://www.w3
 const sticker = src => `<img class="sticker" src="${src}" alt="">`;
 document.getElementById('art1').innerHTML = sticker('img/hug.png');
 document.getElementById('art2').innerHTML = sticker('img/bed.png');
-document.getElementById('art3').innerHTML = sticker('img/hug.png');
+document.getElementById('art3').innerHTML = sticker('img/hug2.png');
 document.getElementById('art4').innerHTML = sticker('img/bed.png');
 
 // грустный плачущий котик
