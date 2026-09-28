@@ -72,6 +72,11 @@
     75%{transform:translateY(-3px) rotate(2.5deg) scale(1.015,.985)}
   }
 
+  .swap{display:grid;place-items:end center}
+  .swap img{grid-area:1/1;transition:opacity .6s ease}
+  .swap img.off{opacity:0}
+  .swap img[src$="pan.png"]{width:220px}
+
   /* «Нет» подмигивает, пока на него не нажали */
   .hint{animation:hint 2.2s ease-in-out infinite}
   @keyframes hint{0%,55%,100%{transform:none}62%{transform:rotate(-7deg) scale(1.06)}69%{transform:rotate(7deg) scale(1.06)}76%{transform:rotate(-5deg)}83%{transform:rotate(4deg)}90%{transform:none}}
@@ -270,7 +275,10 @@ const svg = (vb, body) => `<svg class="art" viewBox="${vb}" xmlns="http://www.w3
 const sticker = src => `<img class="sticker" src="${src}" alt="">`;
 document.getElementById('art1').innerHTML = sticker('img/hug.png?v=2');
 document.getElementById('art2').innerHTML = sticker('img/bed.png?v=2');
-document.getElementById('art3').innerHTML = sticker('img/hug2.png');
+// 3-й вопрос: две картинки сменяют друг друга каждые 3 секунды
+document.getElementById('art3').innerHTML =
+  `<div class="swap"><img class="sticker" src="img/hug2.png" alt=""><img class="sticker off" src="img/pan.png" alt=""></div>`;
+setInterval(() => document.querySelectorAll('#art3 .swap img').forEach(img => img.classList.toggle('off')), 3000);
 document.getElementById('art4').innerHTML = sticker('img/kiss.png');
 
 // грустный плачущий котик
