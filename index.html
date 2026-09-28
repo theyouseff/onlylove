@@ -62,6 +62,13 @@
        cursor:pointer;transition:transform .35s cubic-bezier(.34,1.7,.5,1), box-shadow .2s;touch-action:manipulation}
   .btn.ghost{background:#fff;color:var(--pink);border:2px solid var(--pink-soft);box-shadow:0 6px 14px rgba(229,98,138,.12)}
   .btn.wide{width:100%}
+  .sticker{display:block;width:170px;height:auto;margin:0 auto;animation:bob 2.4s ease-in-out infinite}
+
+  /* «Нет» подмигивает, пока на него не нажали */
+  .hint{animation:hint 2.2s ease-in-out infinite}
+  @keyframes hint{0%,55%,100%{transform:none}62%{transform:rotate(-7deg) scale(1.06)}69%{transform:rotate(7deg) scale(1.06)}76%{transform:rotate(-5deg)}83%{transform:rotate(4deg)}90%{transform:none}}
+  .btn.wide.hint{animation-name:hintx}
+  @keyframes hintx{0%,55%,100%{transform:none}62%{transform:translateX(-7px)}69%{transform:translateX(7px)}76%{transform:translateX(-5px)}83%{transform:translateX(4px)}90%{transform:none}}
 
   .row{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap}
   .col{display:flex;flex-direction:column;gap:14px;align-items:stretch}
@@ -124,7 +131,7 @@
       <h1 data-text="q1"></h1>
       <div class="row">
         <button class="btn yes" data-next="s2" data-text="q1yes"></button>
-        <span class="dodge"><button class="btn ghost no" data-text="q1no"></button></span>
+        <span class="dodge"><button class="btn ghost no hint" data-text="q1no"></button></span>
       </div>
       <div class="tease"></div>
     </div>
@@ -137,7 +144,7 @@
       <h1 data-text="q2"></h1>
       <div class="row">
         <button class="btn yes" data-next="s3" data-text="q2yes"></button>
-        <span class="dodge"><button class="btn ghost no" data-text="q2no"></button></span>
+        <span class="dodge"><button class="btn ghost no hint" data-text="q2no"></button></span>
       </div>
       <div class="tease"></div>
     </div>
@@ -151,7 +158,7 @@
       <div class="col">
         <div class="arrows" id="arrows"></div>
         <button class="btn wide" id="yes3" data-next="s4" data-text="q3yes"></button>
-        <button class="btn ghost wide" id="no3" data-text="q3no"></button>
+        <button id="no3" class="btn ghost wide hint" data-text="q3no"></button>
         <div class="sad" id="sad">
           <div id="sadArt"></div>
           <div class="cap" data-text="sadCaption"></div>
@@ -251,44 +258,15 @@ function cat({x = 0, y = 0, s = 1, fur = '#f5a860', stripes = true, face = 'happ
 const WHITE = {fur: '#ffffff', stripes: false};
 const svg = (vb, body) => `<svg class="art" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
 
-// 1: рыжий котик дарит колечко белой кошечке
-document.getElementById('art1').innerHTML = svg('0 0 260 180', `
-  ${cat({x: 8, y: 32, face: 'happy', cls: 'bob'})}
-  ${cat({x: 132, y: 32, face: 'shy', cls: 'bob2', ...WHITE})}
-  <g class="bob"><g transform="translate(130 22)">
-    <circle cx="0" cy="8" r="10" fill="none" stroke="#e6b422" stroke-width="4.5"/>
-    <path d="M-7 -4 l7 -9 l7 9 l-7 7 z" fill="#c8eeff" stroke="#4d9fd0" stroke-width="2" stroke-linejoin="round"/>
-  </g></g>
-  ${sparkle(108, 14, .9, '#f7c948', 0)}${sparkle(154, 10, .7, '#f7c948', .5)}${sparkle(146, 40, .5, '#f7c948', 1)}
-`);
-
-// 2: обнимашки
-document.getElementById('art2').innerHTML = svg('0 0 260 180', `
-  ${cat({x: 112, y: 34, face: 'closed', cls: 'bob2', ...WHITE})}
-  ${cat({x: 28, y: 34, face: 'closed', cls: 'bob'})}
-  <path d="M112 132 q28 -14 46 -2" fill="none" stroke="${ST}" stroke-width="13" stroke-linecap="round"/>
-  <path d="M112 132 q28 -14 46 -2" fill="none" stroke="#f5a860" stroke-width="7" stroke-linecap="round"/>
-  ${heart(130, 22, 1.1, '#f06a8a', 'rise')}${heart(156, 32, .7, '#f58fa8', 'rise')}${heart(104, 32, .6, '#f58fa8', 'rise')}
-`);
-
-// 3: котик с большим сердцем
-document.getElementById('art3').innerHTML = svg('0 0 260 180', `
-  ${cat({x: 70, y: 30, face: 'shy', cls: 'bob'})}
-  <g class="bob">${heart(130, 140, 2, '#f06a8a')}</g>
-  ${sparkle(50, 40, .9, '#f7c948', 0)}${sparkle(210, 50, .8, '#f7c948', .6)}${sparkle(200, 20, .5, '#f58fa8', 1.1)}
-  ${heart(56, 96, .6, '#f58fa8', 'rise')}${heart(206, 104, .6, '#f58fa8', 'rise')}
-`);
+// котики-стикеры
+const sticker = src => `<img class="sticker" src="${src}" alt="">`;
+document.getElementById('art1').innerHTML = sticker('img/hug.png');
+document.getElementById('art2').innerHTML = sticker('img/bed.png');
+document.getElementById('art3').innerHTML = sticker('img/hug.png');
+document.getElementById('art4').innerHTML = sticker('img/bed.png');
 
 // грустный плачущий котик
 document.getElementById('sadArt').innerHTML = `<svg viewBox="0 0 130 150" xmlns="http://www.w3.org/2000/svg">${cat({x: 5, y: 3, face: 'cry', cls: 'shake'})}</svg>`;
-
-// финал: поцелуйчик
-document.getElementById('art4').innerHTML = svg('0 0 260 180', `
-  ${cat({x: 116, y: 34, face: 'shy', cls: 'bob2', ...WHITE})}
-  ${cat({x: 24, y: 34, face: 'kiss', cls: 'bob'})}
-  ${heart(130, 22, 1.2, '#f06a8a', 'rise')}${heart(104, 40, .6, '#f58fa8', 'rise')}${heart(160, 36, .7, '#f58fa8', 'rise')}
-  ${sparkle(30, 20, .8, '#f7c948', 0)}${sparkle(236, 26, .8, '#f7c948', .7)}
-`);
 
 // стрелки над «ДААА!»
 const arrow = cls => `<svg class="${cls}" viewBox="0 0 46 58"><path d="M23 3 C 12 16, 32 26, 23 44" fill="none" stroke="#e5628a" stroke-width="5" stroke-linecap="round"/><path d="M12 36 L23 52 L34 36" fill="none" stroke="#e5628a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -417,6 +395,7 @@ document.querySelectorAll('.dodge').forEach(wrap => {
 
   function dodge(e) {
     e.preventDefault();
+    btn.classList.remove('hint');
     const now = Date.now();
     if (now - lastT < 250) return; // pointerdown + click от одного тапа
     lastT = now;
